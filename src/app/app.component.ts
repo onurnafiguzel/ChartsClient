@@ -16,9 +16,32 @@ export class AppComponent {
     this.connection.start();
 
     this.connection.on('receiveMessage', (message) => {
-      alert(message);
+      console.log(message);
+
+      for (let i = 0; i < this.chart.series.length; i++) {
+        this.chart.series[i].remove();        
+      }
+
+      for (let i = 0; i < message.length; i++) {
+        this.chart.addSeries(message[i]);        
+      }
+
+      //this.chartOptions.series = message;
+
+      this.updateFromInput = true;
+      this.chart.hideLoading();
     });
+
+    const self = this;
+    this.chartCallback = chart => {
+      self.chart = chart;
+    };
   }
+
+  chart : any;
+  updateFromInput = false;
+  chartCallback;
+  
   Highcharts: typeof Highcharts = Highcharts;
   chartOptions: Highcharts.Options = {
     title: {
@@ -42,23 +65,6 @@ export class AppComponent {
       align: 'right',
       verticalAlign: 'middle',
     },
-    series: [
-      {
-        name: 'X',
-        type: 'line',
-        data: [1000, 2000, 3000],
-      },
-      {
-        name: 'Y',
-        type: 'line',
-        data: [9000, 5000, 6000],
-      },
-      {
-        name: 'Z',
-        type: 'line',
-        data: [7000, 6000, 1000],
-      },
-    ],
     plotOptions: {
       series: {
         label: {
