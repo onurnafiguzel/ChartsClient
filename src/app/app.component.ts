@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import * as Highcharts from 'highcharts';
-import * as signalR from "@microsoft/signalr";
+import * as signalR from '@microsoft/signalr';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +8,17 @@ import * as signalR from "@microsoft/signalr";
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
+  connection: signalR.HubConnection;
+  constructor() {
+    this.connection = new signalR.HubConnectionBuilder()
+      .withUrl('https:localhost:7283/satishub')
+      .build();
+    this.connection.start();
+
+    this.connection.on('receiveMessage', (message) => {
+      alert(message);
+    });
+  }
   Highcharts: typeof Highcharts = Highcharts;
   chartOptions: Highcharts.Options = {
     title: {
@@ -46,15 +57,15 @@ export class AppComponent {
         name: 'Z',
         type: 'line',
         data: [7000, 6000, 1000],
-      }
+      },
     ],
-    plotOptions:{
-      series:{
-        label:{
-          connectorAllowed:true
+    plotOptions: {
+      series: {
+        label: {
+          connectorAllowed: true,
         },
-        pointStart:100
-      }
-    }
+        pointStart: 100,
+      },
+    },
   };
 }
